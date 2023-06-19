@@ -1,14 +1,33 @@
-const { resolve } = require("path");
+const { resolve, join } = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { globSync } = require("glob");
+
+const setMpa = () => {
+  const entry = {};
+  const htmlwebpackplugins = [];
+  const entryPath = globSync("./src/*/index.js");
+  entryPath.forEach((item) => {
+    const entryName = item.match(/src\\(.*)\\index\.js$/)[1];
+    entry[entryName] = `./${item}`;
+    htmlwebpackplugins.push(
+      new HtmlWebpackPlugin({
+        template: `./src/${entryName}/index.html`,
+        filename: `${entryName}.html`,
+        chunks: [entryName],
+      })
+    );
+  });
+  return { entry, htmlwebpackplugins };
+};
+
+const { entry, htmlwebpackplugins } = setMpa();
 
 module.exports = {
-  entry: {
-    index: "./src/index.js",
-  },
+  entry,
   output: {
-    path: resolve(__dirname, "./dist"),
+    path: resolve(__dirname, "./mpa"),
     filename: "[name].js",
     assetModuleFilename: "images/[name][ext][query]",
   },
@@ -46,11 +65,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./src/public/index.html",
-      filename: "index.html",
-      chunks: ["index"],
-    }),
+    ...htmlwebpackplugins,
     new MiniCssExtractPlugin(),
   ],
 };
