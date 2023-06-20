@@ -42,6 +42,12 @@ module.exports = {
         test: /\.(png|jpe?g|gif|webp)$/,
         type: "asset",
       },
+      {
+        test: /\.js$/,
+        use: {
+          loader: "babel-loader"
+        },
+      },
     ],
   },
   plugins: [
