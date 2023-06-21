@@ -2,6 +2,7 @@ const { resolve } = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TxtWebpackPlugin = require("./plugins/tex-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -45,7 +46,7 @@ module.exports = {
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
         },
       },
     ],
@@ -58,5 +59,6 @@ module.exports = {
       chunks: ["index"],
     }),
     new MiniCssExtractPlugin(),
+    new TxtWebpackPlugin({ name: "TxtWebpackPlugin" }),
   ],
 };
